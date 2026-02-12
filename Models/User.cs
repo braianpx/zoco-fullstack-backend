@@ -29,7 +29,7 @@ namespace Zoco.Api.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         //Relaciones
-        //FK ROLE
+        //Role FK
         public int RoleId { get; set; }
 
         [ForeignKey(nameof(RoleId))]

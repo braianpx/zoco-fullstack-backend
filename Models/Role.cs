@@ -10,6 +10,8 @@ namespace Zoco.Api.Models
         [StringLength(40)]
         public string Name { get; set; } = string.Empty;
 
+        // Relaciones 
+        public ICollection<User> Users { get; set; } = new List<User>();
 
     }
 }
