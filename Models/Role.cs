@@ -6,12 +6,12 @@ namespace Zoco.Api.Models
     {
         public int Id { get; set; }
 
-        [Required]
-        [StringLength(40)]
+        [Required(ErrorMessage = "El nombre del rol es obligatorio.")]
+        [StringLength(40, ErrorMessage = "El nombre del rol no puede superar los 40 caracteres.")]
         public string Name { get; set; } = string.Empty;
 
-        // Relaciones 
+        // Relaciones
         public ICollection<User> Users { get; set; } = new List<User>();
-
     }
 }
+

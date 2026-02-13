@@ -7,16 +7,18 @@ namespace Zoco.Api.Models
     {
         public int Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "La fecha de inicio (StartDate) es obligatoria")]
         public DateTime StartDate { get; set; }
 
+        [Required(ErrorMessage = "La fecha de fin (EndDate) debe ser proporcionada si se cierra la sesión")]
         public DateTime? EndDate { get; set; }
 
-        //Relacion
-        // User FK
+        // Relación
+        [Required(ErrorMessage = "El UserId es obligatorio")]
         public int UserId { get; set; }
 
         [ForeignKey(nameof(UserId))]
-        public User? User {get; set;}
+        public User? User { get; set; }
     }
 }
+
