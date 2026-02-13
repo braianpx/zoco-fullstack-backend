@@ -3,8 +3,17 @@ using Zoco.Api.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//validaciones personalizadas
+builder.Services.AddCustomApiBehavior();
+
 //repositorios
 builder.Services.AddAllRepositories();
+
+//JWT
+builder.Services.AddJwtConfiguration(builder.Configuration);
+
+//Swagger
+builder.Services.AddSwaggerConfiguration();
 
 // Servicios
 builder.Services.AddAllServices();
@@ -28,6 +37,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
