@@ -29,6 +29,24 @@ namespace Zoco.Api.Repositories
                 .FirstOrDefaultAsync(s => s.Id == id);
         }
 
+        //Obetener todos los sessionlog de un usuario por Id
+        public async Task<List<SessionLog>> GetByUserIdAsync(int userId)
+        {
+            return await _context.SessionLogs
+                .Where(s => s.UserId == userId)
+                .OrderByDescending(s => s.StartDate)
+                .ToListAsync();
+        }
+
+        // Obetener ultima sessionlog de un usuario por su Id
+        public async Task<SessionLog?> GetActiveSessionByUserIdAsync(int userId)
+        {
+            return await _context.SessionLogs
+                .Where(s => s.UserId == userId && s.EndDate == null)
+                .OrderByDescending(s => s.StartDate)
+                .FirstOrDefaultAsync();
+        }
+
         // Craer SessionLog
         public async Task AddAsync(SessionLog sessionLog)
         {
