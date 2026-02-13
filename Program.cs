@@ -1,15 +1,13 @@
 using Zoco.Api.Extensions;
 using Zoco.Api.Middlewares;
-using Zoco.Api.Repositories;
-using Zoco.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//repositories
-builder.Services.AddScoped<UserRepository>();
+//repositorios
+builder.Services.AddAllRepositories();
 
 // Servicios
-builder.Services.AddScoped<UserService>();
+builder.Services.AddAllServices();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
