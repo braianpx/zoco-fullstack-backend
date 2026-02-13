@@ -23,7 +23,7 @@ namespace Zoco.Api.Models.DTOs
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        public string UserName { get; set; }
+        public string UserName { get; set; } = string.Empty;
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
 

@@ -10,7 +10,6 @@ namespace Zoco.Api.Models
         [Required(ErrorMessage = "La fecha de inicio (StartDate) es obligatoria")]
         public DateTime StartDate { get; set; }
 
-        [Required(ErrorMessage = "La fecha de fin (EndDate) debe ser proporcionada si se cierra la sesión")]
         public DateTime? EndDate { get; set; }
 
         // Relación
