@@ -1,5 +1,6 @@
 ﻿using BCrypt.Net;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -94,9 +95,13 @@ namespace Zoco.Api.Services
             var user = await _userRepository.GetByIdAsync(id);
             if (user == null)
                 return (false, "Usuario no encontrado");
-
+            
+            
             //Validar rol existente
-            if (!await _userRepository.RoleExistsAsync(dto.RoleId))
+            if (dto.RoleId == null)
+                return (false, "RoleId es obligatorio");
+
+            if (!await _userRepository.RoleExistsAsync(dto.RoleId.Value))
                 return (false, "RoleId no válido, el rol no existe");
 
             user.FirstName = dto.FirstName;
@@ -104,7 +109,7 @@ namespace Zoco.Api.Services
             user.Email = dto.Email;
             if (!string.IsNullOrEmpty(dto.Password))
                 user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
-            user.RoleId = dto.RoleId;
+            user.RoleId = dto.RoleId.Value;
 
             await _userRepository.UpdateAsync(user);
             return (true, null);
