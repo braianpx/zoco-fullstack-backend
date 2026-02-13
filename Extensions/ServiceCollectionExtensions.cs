@@ -5,35 +5,73 @@ namespace Zoco.Api.Extensions
 {
     public static class ServiceCollectionExtensions
     {
+        // Registrar automáticamente todos los Services
         public static IServiceCollection AddAllServices(this IServiceCollection services)
         {
-            // Obtenemos el assembly actual
+            // Obtener el assembly actual
             var assembly = Assembly.GetExecutingAssembly();
 
-            // Buscamos todas las clases que terminen en "Service"
+            // Buscar todas las clases concretas que terminen en "Service"
             var serviceTypes = assembly.GetTypes()
-                .Where(t => t.IsClass && !t.IsAbstract && t.Name.EndsWith("Service"));
+                .Where(t => t.IsClass
+                            && !t.IsAbstract
+                            && t.Name.EndsWith("Service"));
 
-            foreach (var type in serviceTypes)
+            foreach (var implementationType in serviceTypes)
             {
-                // Registra cada clase como Scoped
-                services.AddScoped(type);
+                // Buscar si existe una interfaz que siga la convención:
+                // I + NombreClase  (Ej: IJwtService → JwtService)
+                var interfaceType = implementationType
+                    .GetInterfaces()
+                    .FirstOrDefault(i =>
+                        i.Name == $"I{implementationType.Name}");
+
+                if (interfaceType != null)
+                {
+                    // Registrar interfaz → implementación
+                    services.AddScoped(interfaceType, implementationType);
+                }
+                else
+                {
+                    // Si no tiene interfaz, registrar solo la clase concreta
+                    services.AddScoped(implementationType);
+                }
             }
 
             return services;
         }
 
-        // Lo mismo que service solo que para los repostorios
+        // Registrar automáticamente todos los Repositories
         public static IServiceCollection AddAllRepositories(this IServiceCollection services)
         {
+            // Obtener el assembly actual
             var assembly = Assembly.GetExecutingAssembly();
 
+            // Buscar todas las clases concretas que terminen en "Repository"
             var repositoryTypes = assembly.GetTypes()
-                .Where(t => t.IsClass && !t.IsAbstract && t.Name.EndsWith("Repository"));
+                .Where(t => t.IsClass
+                            && !t.IsAbstract
+                            && t.Name.EndsWith("Repository"));
 
-            foreach (var type in repositoryTypes)
+            foreach (var implementationType in repositoryTypes)
             {
-                services.AddScoped(type);
+                // Buscar si existe una interfaz que siga la convención:
+                // I + NombreClase  (Ej: IUserRepository → UserRepository)
+                var interfaceType = implementationType
+                    .GetInterfaces()
+                    .FirstOrDefault(i =>
+                        i.Name == $"I{implementationType.Name}");
+
+                if (interfaceType != null)
+                {
+                    // Registrar interfaz → implementación
+                    services.AddScoped(interfaceType, implementationType);
+                }
+                else
+                {
+                    // Si no tiene interfaz, registrar solo la clase concreta
+                    services.AddScoped(implementationType);
+                }
             }
 
             return services;
