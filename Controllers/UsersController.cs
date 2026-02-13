@@ -7,9 +7,8 @@ using System.Collections.Generic;
 
 namespace Zoco.Api.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class UsersController : ControllerBase
+    public class UsersController : BaseController
     {
         private readonly UserService _userService;
 
@@ -18,122 +17,59 @@ namespace Zoco.Api.Controllers
             _userService = userService;
         }
 
-        // GET /api/users
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var users = await _userService.GetAllUsersAsync();
-            return Ok(new ApiResponse<List<UserResponseDTO>>
-            {
-                Success = true,
-                Message = "Usuarios obtenidos correctamente",
-                Data = users
-            });
+            return Success(users, "Usuarios obtenidos correctamente");
         }
 
-        // GET /api/users/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             var user = await _userService.GetUserByIdAsync(id);
+
             if (user == null)
-                return NotFound(new ApiResponse<object>
-                {
-                    Success = false,
-                    Message = "Usuario no encontrado",
-                    Data = null
-                });
+                return Failure("Usuario no encontrado", 404);
 
-            return Ok(new ApiResponse<UserResponseDTO>
-            {
-                Success = true,
-                Message = "Usuario obtenido correctamente",
-                Data = user
-            });
+            return Success(user, "Usuario obtenido correctamente");
         }
 
-        // POST /api/users
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] UserCreateDTO dto)
+        public async Task<IActionResult> Create(UserCreateDTO dto)
         {
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState.Values.SelectMany(v => v.Errors)
-                                              .Select(e => e.ErrorMessage)
-                                              .ToList();
-
-                return BadRequest(new ApiResponse<List<string>>
-                {
-                    Success = false,
-                    Message = "Errores de validación",
-                    Data = errors
-                });
-            }
-
-            var (success, error, user) = await _userService.CreateUserAsync(dto);
+            var (success, error, user) =
+                await _userService.CreateUserAsync(dto);
 
             if (!success)
-                return BadRequest(new ApiResponse<object>
-                {
-                    Success = false,
-                    Message = error,
-                    Data = null
-                });
+                return Failure(error!, 400);
 
-            return CreatedAtAction(nameof(GetById), new { id = user!.Id }, new ApiResponse<UserResponseDTO>
-            {
-                Success = true,
-                Message = "Usuario creado correctamente",
-                Data = user
-            });
+            return Success(user, "Usuario creado correctamente", 201);
         }
 
-        // PUT /api/users/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] UserUpdateDTO dto)
+        public async Task<IActionResult> Update(int id, UserUpdateDTO dto)
         {
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState.Values.SelectMany(v => v.Errors)
-                                              .Select(e => e.ErrorMessage)
-                                              .ToList();
-
-                return BadRequest(new ApiResponse<List<string>>
-                {
-                    Success = false,
-                    Message = "Errores de validación",
-                    Data = errors
-                });
-            }
-
-            var (success, error) = await _userService.UpdateUserAsync(id, dto);
+            var (success, error) =
+                await _userService.UpdateUserAsync(id, dto);
 
             if (!success)
-                return NotFound(new ApiResponse<object>
-                {
-                    Success = false,
-                    Message = error,
-                    Data = null
-                });
+                return Failure(error!, 404);
 
-            return NoContent(); // 204, actualización exitosa sin cuerpo
+            return Success<object>(null, "", 204);
         }
 
-        // DELETE /api/users/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var (success, error) = await _userService.DeleteUserAsync(id);
+            var (success, error) =
+                await _userService.DeleteUserAsync(id);
 
             if (!success)
-                return NotFound(new ApiResponse<object>
-                {
-                    Success = false,
-                    Message = error,
-                    Data = null
-                });
+                return Failure(error!, 404);
 
-            return NoContent(); // 204, eliminado exitoso
+            return Success<object>(null, "", 204);
         }
     }
+
 }
