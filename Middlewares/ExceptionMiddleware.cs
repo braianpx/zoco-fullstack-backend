@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+using Zoco.Api.Models.DTOs;
 
 namespace Zoco.Api.Middlewares
 {
@@ -10,7 +11,9 @@ namespace Zoco.Api.Middlewares
         private readonly RequestDelegate _next;
         private readonly ILogger<ExceptionMiddleware> _logger;
 
-        public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
+        public ExceptionMiddleware(
+            RequestDelegate next,
+            ILogger<ExceptionMiddleware> logger)
         {
             _next = next;
             _logger = logger;
@@ -20,20 +23,27 @@ namespace Zoco.Api.Middlewares
         {
             try
             {
-                await _next(context); // Ejecuta el siguiente middleware / controller
+                await _next(context);
             }
-            catch (Exception Err)
+            catch (Exception ex)
             {
-                _logger.LogError(Err.ToString(), "Ocurrió un error inesperado");
+                _logger.LogError(ex, "Ocurrió un error inesperado");
 
-                context.Response.StatusCode = 500;
+                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 context.Response.ContentType = "application/json";
 
-                await context.Response.WriteAsJsonAsync(new
+                var response = new ApiResponse<object>
                 {
-                    message = "Ocurrió un error inesperado en el servidor",
-                    detail = Err.Message
-                });
+                    Success = false,
+                    Message = "Ocurrió un error inesperado en el servidor",
+                    Data = new
+                    {
+                        error = ex.Message,
+                        detail = ex.InnerException?.Message,
+                    }
+                };
+
+                await context.Response.WriteAsJsonAsync(response);
             }
         }
     }
