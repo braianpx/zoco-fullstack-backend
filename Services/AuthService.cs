@@ -61,7 +61,7 @@ namespace Zoco.Api.Services
             return (true, "Login exitoso.", new AuthResponseDTO
             {
                 Token = token,
-                Expiration = expiration
+                Expiration = expiration,
             });
 
         }

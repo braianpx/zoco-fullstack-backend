@@ -27,11 +27,11 @@ namespace Zoco.Api.Controllers
             return Success(result.Data, result.Message!);
         }
 
+        [Authorize] // Esta ruta requiere un token valido
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
-            var userId = int.Parse(
-                User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var userId = User.GetUserId(); // solo funciona para rutas con Authorize
 
             var result = await _authService.LogoutAsync(userId);
 
