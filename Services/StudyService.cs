@@ -27,8 +27,8 @@ namespace Zoco.Api.Services
                 Id = s.Id,
                 Institution = s.Institution,
                 Degree = s.Degree,
-                StartDate = s.StartDate,
-                EndDate = s.EndDate,
+                StartDate = s.StartDate.AddHours(-3),
+                EndDate = s.EndDate?.AddHours(-3),
                 UserId = s.UserId,
                 UserName = $"{s.User?.FirstName} {s.User?.LastName}"
             }).ToList();
@@ -49,8 +49,8 @@ namespace Zoco.Api.Services
                 Id = study.Id,
                 Institution = study.Institution,
                 Degree = study.Degree,
-                StartDate = study.StartDate,
-                EndDate = study.EndDate,
+                StartDate = study.StartDate.AddHours(-3),
+                EndDate = study.EndDate?.AddHours(-3),
                 UserId = study.UserId,
                 UserName = $"{study.User?.FirstName} {study.User?.LastName}"
             };
