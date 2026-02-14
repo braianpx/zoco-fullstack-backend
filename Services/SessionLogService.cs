@@ -22,12 +22,12 @@ namespace Zoco.Api.Services
                 Id = l.Id,
                 UserId = l.UserId,
                 UserName = $"{l.User?.FirstName} {l.User?.LastName}",
-                StartDate = l.StartDate,
-                EndDate = l.EndDate
+                StartDate = l.StartDate.AddHours(-3),
+                EndDate = l.EndDate?.AddHours(-3)
             }).ToList();
         }
 
-        // Obtener un Log especifico por Id
+        // Obtener un Log específico por Id
         public async Task<SessionLogResponseDTO?> GetLogByIdAsync(int id)
         {
             var log = await _repository.GetByIdAsync(id);
@@ -38,12 +38,12 @@ namespace Zoco.Api.Services
                 Id = log.Id,
                 UserId = log.UserId,
                 UserName = $"{log.User?.FirstName} {log.User?.LastName}",
-                StartDate = log.StartDate,
-                EndDate = log.EndDate
+                StartDate = log.StartDate.AddHours(-3),
+                EndDate = log.EndDate?.AddHours(-3)
             };
         }
 
-        // Crear log (se usa en login)
+        // Crear log (login)
         public async Task<SessionLogResponseDTO> CreateLogAsync(int userId)
         {
             var log = new SessionLog
@@ -62,18 +62,29 @@ namespace Zoco.Api.Services
             };
         }
 
-        // Actualizar log (se usa en logout)
-        public async Task<bool> EndLogAsync(int id)
+        // Obtener sesión por ID (delegar al repository)
+        public async Task<SessionLog?> GetSessionByIdAsync(int sessionId)
         {
-            var log = await _repository.GetByIdAsync(id);
-            if (log == null) return false;
-
-            log.EndDate = DateTime.UtcNow;
-            await _repository.UpdateAsync(log);
-            return true;
+            return await _repository.GetByIdAsync(sessionId);
         }
 
-        //Eliminar un log
+        // Obtener sesión activa de usuario
+        public async Task<SessionLog?> GetActiveSessionByUserIdAsync(int userId)
+        {
+            return await _repository.GetActiveSessionByUserIdAsync(userId);
+        }
+
+        // Finalizar sesión
+        public async Task<bool> EndLogAsync(int sessionId)
+        {
+            var session = await _repository.GetByIdAsync(sessionId);
+
+            if (session == null) return false; // no existe, ya no se pasa null al repository
+
+            return await _repository.EndSessionAsync(session);
+        }
+
+        // Eliminar log
         public async Task<bool> DeleteLogAsync(int id)
         {
             var log = await _repository.GetByIdAsync(id);
