@@ -9,6 +9,9 @@ builder.Services.AddCustomApiBehavior();
 //repositorios
 builder.Services.AddAllRepositories();
 
+//Filtros
+builder.Services.AddScoped<UserAccessFilter>();
+
 //JWT
 builder.Services.AddJwtConfiguration(builder.Configuration);
 
