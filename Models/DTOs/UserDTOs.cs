@@ -22,8 +22,6 @@ namespace Zoco.Api.Models.DTOs
         [Required(ErrorMessage = "La contraseña es obligatoria")]
         public string Password { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "El roleId es obligatorio")]
-        public int RoleId { get; set; }
     }
 
     // DTO para actualizar un usuario

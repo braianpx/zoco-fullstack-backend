@@ -60,10 +60,6 @@ namespace Zoco.Api.Services
             if (await _userRepository.ExistsByEmailAsync(dto.Email))
                 return (false, "El email ya está en uso", null);
 
-            //Validar rol existente
-            if (!await _userRepository.RoleExistsAsync(dto.RoleId))
-                return (false, "RoleId no válido, el rol no existe", null);
-
             // Crear entidad
             var user = new User
             {
@@ -71,7 +67,7 @@ namespace Zoco.Api.Services
                 LastName = dto.LastName,
                 Email = dto.Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-                RoleId = dto.RoleId
+                RoleId = 2 //Role user siempre 
             };
 
             await _userRepository.AddAsync(user);
@@ -95,8 +91,7 @@ namespace Zoco.Api.Services
             var user = await _userRepository.GetByIdAsync(id);
             if (user == null)
                 return (false, "Usuario no encontrado");
-            
-            
+
             //Validar rol existente
             if (dto.RoleId == null)
                 return (false, "RoleId es obligatorio");

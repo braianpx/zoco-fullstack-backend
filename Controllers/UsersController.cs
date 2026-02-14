@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Zoco.Api.Models;
 using Zoco.Api.Models.DTOs;
 using Zoco.Api.Services;
-using System.Collections.Generic;
 
 namespace Zoco.Api.Controllers
 {
@@ -17,6 +20,8 @@ namespace Zoco.Api.Controllers
             _userService = userService;
         }
 
+        //Obtener Todos los usuarios
+        [Authorize(Policy = "AdminOnly")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -24,9 +29,15 @@ namespace Zoco.Api.Controllers
             return Success(users, "Usuarios obtenidos correctamente");
         }
 
+        //Obtener un usuario
+        [ServiceFilter(typeof(UserAccessFilter))]
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
+            var userId = User.GetUserId();
+            var userRole = User.GetUserRole();
+
             var user = await _userService.GetUserByIdAsync(id);
 
             if (user == null)
@@ -35,6 +46,7 @@ namespace Zoco.Api.Controllers
             return Success(user, "Usuario obtenido correctamente");
         }
 
+        //Crear Usuario
         [HttpPost]
         public async Task<IActionResult> Create(UserCreateDTO dto)
         {
@@ -47,9 +59,15 @@ namespace Zoco.Api.Controllers
             return Success(user, "Usuario creado correctamente", 201);
         }
 
+        //Modificar Usuario
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, UserUpdateDTO dto)
         {
+            var userRole = User.GetUserRole();
+
+            if (userRole == "User") dto.RoleId = 2;
+
             var (success, error) =
                 await _userService.UpdateUserAsync(id, dto);
 
@@ -59,9 +77,15 @@ namespace Zoco.Api.Controllers
             return Success<object>(null, "", 204);
         }
 
+        //Borrar usuario
+        [ServiceFilter(typeof(UserAccessFilter))]
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
+            var userRole = User.GetUserRole();
+            var userId = User.GetUserId();
+
             var (success, error) =
                 await _userService.DeleteUserAsync(id);
 
