@@ -58,7 +58,8 @@ namespace Zoco.Api.Services
             {
                 Id = log.Id,
                 UserId = log.UserId,
-                StartDate = log.StartDate
+                StartDate = log.StartDate,
+                UserName = $"{log.User?.FirstName} {log.User?.LastName}",
             };
         }
 

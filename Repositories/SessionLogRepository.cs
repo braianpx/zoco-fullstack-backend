@@ -32,6 +32,7 @@ namespace Zoco.Api.Repositories
             return await _context.SessionLogs
                 .Where(s => s.UserId == userId && s.EndDate == null)
                 .OrderByDescending(s => s.StartDate)
+                .Include(s => s.User)
                 .FirstOrDefaultAsync();
         }
 
