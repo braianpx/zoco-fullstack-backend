@@ -44,7 +44,7 @@ namespace Zoco.Api.Models.DTOs
         public string? Password { get; set; }
 
         [Required(ErrorMessage = "El roleId es obligatorio")]
-        public int? RoleId { get; set; }
+        public string? RoleName { get; set; } = string.Empty;
     }
 
     // DTO para respuesta al cliente

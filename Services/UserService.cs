@@ -93,6 +93,10 @@ namespace Zoco.Api.Services
             if (await _userRepository.ExistsByEmailAsync(dto.Email))
                 return (false, "El email ya está en uso", null);
 
+            var userRole = await _userRepository.RoleExistsAsync("User");
+            if(userRole == null)
+                return (false, "Ocurrio un error a la hora de asignar un Rol", null);
+
             // Crear entidad
             var user = new User
             {
@@ -100,7 +104,7 @@ namespace Zoco.Api.Services
                 LastName = dto.LastName,
                 Email = dto.Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-                RoleId = 2 //Role user siempre 
+                RoleId = userRole.Id //Role user siempre 
             };
 
             await _userRepository.AddAsync(user);
@@ -112,7 +116,8 @@ namespace Zoco.Api.Services
                 LastName = user.LastName,
                 Email = user.Email,
                 RoleId = user.RoleId,
-                CreatedAt = user.CreatedAt.AddHours(-3)
+                CreatedAt = user.CreatedAt.AddHours(-3),
+                RoleName = userRole.Name
             };
 
             return (true, null, response);
@@ -126,10 +131,12 @@ namespace Zoco.Api.Services
                 return (false, "Usuario no encontrado");
 
             //Validar rol existente
-            if (dto.RoleId == null)
-                return (false, "RoleId es obligatorio");
+            if (dto.RoleName == null)
+                return (false, "RoleName es obligatorio");
 
-            if (!await _userRepository.RoleExistsAsync(dto.RoleId.Value))
+            //Obtener Rol
+            var userRole = await _userRepository.RoleExistsAsync(dto.RoleName);
+            if (userRole == null)
                 return (false, "RoleId no válido, el rol no existe");
 
             user.FirstName = dto.FirstName;
@@ -137,7 +144,7 @@ namespace Zoco.Api.Services
             user.Email = dto.Email;
             if (!string.IsNullOrEmpty(dto.Password))
                 user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
-            user.RoleId = dto.RoleId.Value;
+            user.RoleId = userRole.Id;
 
             await _userRepository.UpdateAsync(user);
             return (true, null);

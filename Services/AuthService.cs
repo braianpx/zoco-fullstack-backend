@@ -62,6 +62,7 @@ namespace Zoco.Api.Services
             {
                 Token = token,
                 Expiration = expiration,
+                Role = user.Role.Name,
             });
 
         }

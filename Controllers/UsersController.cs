@@ -66,7 +66,7 @@ namespace Zoco.Api.Controllers
         {
             var userRole = User.GetUserRole();
 
-            if (userRole == "User") dto.RoleId = 2;
+            if (userRole == "User") dto.RoleName = "User";
 
             var (success, error) =
                 await _userService.UpdateUserAsync(id, dto);

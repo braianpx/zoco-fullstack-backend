@@ -70,9 +70,9 @@ namespace Zoco.Api.Repositories
         }
 
         // Verificar si existe un Rol
-        public async Task<bool> RoleExistsAsync(int roleId)
+        public async Task<Role?> RoleExistsAsync(string RoleName)
         {
-            return await _context.Roles.AnyAsync(r => r.Id == roleId);
+            return await _context.Roles.FirstOrDefaultAsync(r => r.Name == RoleName);
         }
 
     }
