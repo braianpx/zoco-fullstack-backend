@@ -1,6 +1,6 @@
 ﻿# Zoco Fullstack Backend
 
-Backend desarrollado en **ASP.NET Core (.NET 8)** con autenticación JWT y Entity Framework Core.
+Backend desarrollado en **ASP.NET Core (.NET 8)** con autenticación JWT, Swagger, Entity Framework Core, Inyección de dependencias y Swagger.
 
 🔗 Repositorio:  
 https://github.com/braianpx/zoco-fullstack-backend.git
@@ -70,7 +70,37 @@ Ejemplo para LocalDB:
 
 ---
 
-## 5️⃣ Ejecutar el proyecto
+## 5️⃣ Configurar el URL de la api
+
+El URL de la API se configura desde `appsettings.json` mediante la propiedad:
+
+```json
+"UrlApi": "http://localhost:5054"
+```
+
+El valor por defecto es:
+
+```
+http://localhost:5054
+```
+
+Si desea cambiar el puerto, simplemente modifique ese valor.
+
+La API se ejecutará en:
+
+```
+http://localhost:PORT
+```
+
+Ejemplo por defecto:
+
+```
+http://localhost:5054
+```
+
+---
+
+## 6️⃣ Ejecutar el proyecto
 
 ```bash
 dotnet run
@@ -82,12 +112,33 @@ La aplicación:
 - Crea la base de datos si no existe
 - Crea los roles necesarios
 - Crea el usuario administrador por defecto
+- Habilita automáticamente Swagger
 
 No es necesario ejecutar:
 
 ```bash
 dotnet ef database update
 ```
+
+---
+
+# 📘 Swagger
+
+La documentación interactiva se habilita automáticamente al iniciar la aplicación.
+
+Acceder a:
+
+```
+http://UrlApi/swagger/index.html
+```
+
+Ejemplo con UrlApi por defecto:
+
+```
+http://localhost:5054/swagger/index.html
+```
+
+Desde allí es posible probar todos los endpoints directamente.
 
 ---
 
@@ -113,6 +164,7 @@ Estas credenciales están definidas en `appsettings.json` en la sección:
 # 🧱 Características Técnicas
 
 - Autenticación con JWT
+- Swagger habilitado automáticamente
 - Entity Framework Core con migraciones automáticas
 - Modelo `Role` para gestión de roles
 - Modelo `SessionLogs` para registro de sesiones
@@ -130,4 +182,4 @@ dotnet restore
 dotnet run
 ```
 
-Configurar únicamente la conexión a SQL Server en `appsettings.json`.
+Configurar únicamente la conexión a SQL Server y el url de la api en `appsettings.json`.
