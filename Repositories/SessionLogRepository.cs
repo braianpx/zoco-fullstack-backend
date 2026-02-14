@@ -8,12 +8,11 @@ namespace Zoco.Api.Repositories
     {
         private readonly AppDbContext _context;
 
-        public SessionLogRepository(AppDbContext context) 
+        public SessionLogRepository(AppDbContext context)
         {
             _context = context;
         }
 
-        // Obtener todos los sessionlogs
         public async Task<List<SessionLog>> GetAllAsync()
         {
             return await _context.SessionLogs
@@ -21,7 +20,6 @@ namespace Zoco.Api.Repositories
                 .ToListAsync();
         }
 
-        // Obtener sessionlog por Id
         public async Task<SessionLog?> GetByIdAsync(int id)
         {
             return await _context.SessionLogs
@@ -29,16 +27,6 @@ namespace Zoco.Api.Repositories
                 .FirstOrDefaultAsync(s => s.Id == id);
         }
 
-        //Obetener todos los sessionlog de un usuario por Id
-        public async Task<List<SessionLog>> GetByUserIdAsync(int userId)
-        {
-            return await _context.SessionLogs
-                .Where(s => s.UserId == userId)
-                .OrderByDescending(s => s.StartDate)
-                .ToListAsync();
-        }
-
-        // Obetener ultima sessionlog de un usuario por su Id
         public async Task<SessionLog?> GetActiveSessionByUserIdAsync(int userId)
         {
             return await _context.SessionLogs
@@ -47,26 +35,34 @@ namespace Zoco.Api.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        // Craer SessionLog
         public async Task AddAsync(SessionLog sessionLog)
         {
             _context.SessionLogs.Add(sessionLog);
             await _context.SaveChangesAsync();
         }
 
-        // Actualizar sessionlog
         public async Task UpdateAsync(SessionLog sessionLog)
         {
             _context.SessionLogs.Update(sessionLog);
             await _context.SaveChangesAsync();
         }
 
-        // Eliminar sessionLog
+        public async Task<bool> EndSessionAsync(SessionLog session)
+        {
+            if (session == null || session.EndDate != null)
+                return false;
+
+            session.EndDate = DateTime.UtcNow;
+            _context.Update(session);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
         public async Task DeleteAsync(SessionLog sessionLog)
         {
             _context.SessionLogs.Remove(sessionLog);
             await _context.SaveChangesAsync();
         }
-
     }
 }
