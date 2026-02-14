@@ -76,7 +76,8 @@ namespace Zoco.Api.Services
                 City = address.City,
                 Country = address.Country,
                 PostalCode = address.PostalCode,
-                UserId = address.UserId
+                UserId = address.UserId,
+                UserName = $"{address.User?.FirstName} {address.User?.LastName}",
             };
         }
 

@@ -31,6 +31,7 @@ namespace Zoco.Api.Repositories
         {
             return await _context.Addresses
                 .Where(a => a.UserId == userId)
+                .Include(s => s.User)
                 .ToListAsync();
         }
 
