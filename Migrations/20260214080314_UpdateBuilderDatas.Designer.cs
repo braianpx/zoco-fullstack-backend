@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Zoco.Api.Data;
 
@@ -11,9 +12,11 @@ using Zoco.Api.Data;
 namespace Zoco.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260214080314_TestMigration")]
+    partial class TestMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,7 +59,7 @@ namespace Zoco.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Addresses", (string)null);
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("Zoco.Api.Models.Role", b =>
@@ -74,7 +77,7 @@ namespace Zoco.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("Zoco.Api.Models.SessionLog", b =>
@@ -98,7 +101,7 @@ namespace Zoco.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("SessionLogs", (string)null);
+                    b.ToTable("SessionLogs");
                 });
 
             modelBuilder.Entity("Zoco.Api.Models.Study", b =>
@@ -132,7 +135,7 @@ namespace Zoco.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Studies", (string)null);
+                    b.ToTable("Studies");
                 });
 
             modelBuilder.Entity("Zoco.Api.Models.User", b =>
@@ -175,7 +178,7 @@ namespace Zoco.Api.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Zoco.Api.Models.Address", b =>
