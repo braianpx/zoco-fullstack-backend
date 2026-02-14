@@ -3,6 +3,10 @@ using Zoco.Api.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//URl api
+var urls = builder.Configuration["UrlApi"];
+if (!string.IsNullOrEmpty(urls)) builder.WebHost.UseUrls(urls);
+
 //validaciones personalizadas
 builder.Services.AddCustomApiBehavior();
 
