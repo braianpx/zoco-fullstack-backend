@@ -31,17 +31,17 @@ namespace Zoco.Api.Services
                 Email = u.Email,
                 RoleId = u.RoleId,
                 RoleName = u.Role?.Name,
-                CreatedAt = u.CreatedAt
+                CreatedAt = u.CreatedAt,
             }).ToList();
         }
 
         // Obtener usuario por Id
-        public async Task<UserResponseDTO?> GetUserByIdAsync(int id)
+        public async Task<UserDetailResponseDTO?> GetUserByIdAsync(int id, string userRole)
         {
             var user = await _userRepository.GetByIdAsync(id);
             if (user == null) return null;
 
-            return new UserResponseDTO
+            return new UserDetailResponseDTO
             {
                 Id = user.Id,
                 FirstName = user.FirstName,
@@ -49,7 +49,40 @@ namespace Zoco.Api.Services
                 Email = user.Email,
                 RoleId = user.RoleId,
                 RoleName = user.Role?.Name,
-                CreatedAt = user.CreatedAt
+                CreatedAt = user.CreatedAt.AddHours(-3),
+                Studies = user.Studies?.Select(s => new StudyResponseDTO
+                {
+                    Id = s.Id,
+                    Institution = s.Institution,
+                    Degree = s.Degree,
+                    StartDate = s.StartDate.AddHours(-3),
+                    EndDate = s.EndDate?.AddHours(-3),
+                    UserId = s.UserId,
+                    UserName = $"{s.User?.FirstName} {s.User?.LastName}"
+                }).ToList(),
+
+                Addresses = user.Addresses?.Select(a => new AddressResponseDTO
+                {
+                    Id = a.Id,
+                    Street = a.Street,
+                    City = a.City,
+                    Country = a.Country,
+                    PostalCode = a.PostalCode,
+                    UserId = a.UserId,
+                    UserName = $"{a.User?.FirstName} {a.User?.LastName}"
+                }).ToList(),
+
+                SessionLogs = 
+                userRole == "Admin" 
+                    ? user.SessionLogs?.Select(sl => new SessionLogResponseDTO
+                    {
+                        Id = sl.Id,
+                        UserId = sl.UserId,
+                        StartDate = sl.StartDate.AddHours(-3),
+                        EndDate = sl.EndDate?.AddHours(-3),
+                        UserName = $"{sl.User?.FirstName} {sl.User?.LastName}"
+                    }).ToList() 
+                    : null
             };
         }
 
@@ -79,7 +112,7 @@ namespace Zoco.Api.Services
                 LastName = user.LastName,
                 Email = user.Email,
                 RoleId = user.RoleId,
-                CreatedAt = user.CreatedAt
+                CreatedAt = user.CreatedAt.AddHours(-3)
             };
 
             return (true, null, response);

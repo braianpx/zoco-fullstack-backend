@@ -20,8 +20,6 @@ namespace Zoco.Api.Repositories
         {
             return await _context.Users
                 .Include(u => u.Role)       
-                .Include(u => u.Studies)    
-                .Include(u => u.Addresses)  
                 .ToListAsync();
         }
 
@@ -32,6 +30,7 @@ namespace Zoco.Api.Repositories
                 .Include(u => u.Role)
                 .Include(u => u.Studies)
                 .Include(u => u.Addresses)
+                .Include(u => u.SessionLogs)
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
 

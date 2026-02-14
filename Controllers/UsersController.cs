@@ -38,7 +38,7 @@ namespace Zoco.Api.Controllers
             var userId = User.GetUserId();
             var userRole = User.GetUserRole();
 
-            var user = await _userService.GetUserByIdAsync(id);
+            var user = await _userService.GetUserByIdAsync(id, userRole);
 
             if (user == null)
                 return Failure("Usuario no encontrado", 404);
