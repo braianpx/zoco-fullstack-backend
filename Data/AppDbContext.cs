@@ -19,20 +19,7 @@ namespace Zoco.Api.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            // ==============================
             // CONFIGURACIÓN
-            // ===================
-
-            // ROLE
-            modelBuilder.Entity<Role>()
-                .HasIndex(r => r.Name)
-                .IsUnique();
-            // Crea automaticamente los roles
-            modelBuilder.Entity<Role>().HasData(
-               new Role { Id = 1, Name = "Admin" },
-               new Role { Id = 2, Name = "User" }
-           );
-
             //USER
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
