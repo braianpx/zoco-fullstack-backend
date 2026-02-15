@@ -58,11 +58,20 @@ namespace Zoco.Api.Services
             var (token, expiration) =
                 _jwtService.GenerateToken(user, user.Role!.Name);
 
+            var userModify = new UserResponseDTO
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email
+            };
+
             return (true, "Login exitoso.", new AuthResponseDTO
             {
                 Token = token,
                 Expiration = expiration,
                 Role = user.Role.Name,
+                User  = userModify,
             });
 
         }
