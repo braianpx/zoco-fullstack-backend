@@ -75,13 +75,13 @@ Ejemplo para LocalDB:
 El URL de la API se configura desde `appsettings.json` mediante la propiedad:
 
 ```json
-"UrlApi": "http://localhost:5054"
+"UrlApi": "https://localhost:7054;http://localhost:5054"
 ```
-
-El valor por defecto es:
+Son valores para https y http.
+El valor por defecto de https es:
 
 ```
-http://localhost:5054
+https://localhost:7054
 ```
 
 Si desea cambiar el puerto, simplemente modifique ese valor.
@@ -89,18 +89,34 @@ Si desea cambiar el puerto, simplemente modifique ese valor.
 La API se ejecutará en:
 
 ```
-http://localhost:PORT
+https://localhost:PORT
 ```
 
 Ejemplo por defecto:
 
 ```
-http://localhost:5054
+https://localhost:7054
 ```
 
 ---
+## 6️⃣ Configurar las URL Habilitadas para consultas al back (CORS)
 
-## 6️⃣ Ejecutar el proyecto
+Las URL de lso CORS se configura desde `appsettings.json` mediante la propiedad:
+
+```json
+    "CorsSettings": {
+        "AllowedOrigins": [
+            "https://localhost:5173", //url https app default
+            "http://localhost:5173", // url http app default
+            "http://localhost:5054", // url swagger http defaul
+            "https://localhost:7054" // url swagger https defaul
+        ]
+    }
+```
+
+Para personalizar las URLs, es recomendable usar HTTPS tanto en el back como en el front para su correcto funcionamiento. Los valores por defecto ya están definidos, por lo que no es necesario cambiarlos.
+
+## 7️⃣ Ejecutar el proyecto
 
 ```bash
 dotnet run
@@ -124,18 +140,18 @@ dotnet ef database update
 
 # 📘 Swagger
 
-La documentación interactiva se habilita automáticamente al iniciar la aplicación.
+La documentación interactiva se habilita al iniciar la aplicación.
 
 Acceder a:
 
 ```
-http://UrlApi/swagger/index.html
+https://UrlApi/swagger/index.html
 ```
 
-Ejemplo con UrlApi por defecto:
+Ejemplo con UrlApi https por defecto:
 
 ```
-http://localhost:5054/swagger/index.html
+https://localhost:7054/swagger/index.html
 ```
 
 Desde allí es posible probar todos los endpoints directamente.
@@ -170,6 +186,8 @@ Estas credenciales están definidas en `appsettings.json` en la sección:
 - Modelo `SessionLogs` para registro de sesiones
 - Método estático `Response` para estandarizar respuestas
 - Arquitectura organizada y desacoplada
+- Configuración de CORS lista para frontend local (AllowedOrigins)
+- Configuración de CORS lista para frontend local (AllowedOrigins)
 
 ---
 
