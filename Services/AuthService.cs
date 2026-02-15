@@ -63,7 +63,8 @@ namespace Zoco.Api.Services
                 Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                Email = user.Email
+                Email = user.Email,
+                CreatedAt = user.CreatedAt,
             };
 
             return (true, "Login exitoso.", new AuthResponseDTO
