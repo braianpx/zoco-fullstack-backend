@@ -29,6 +29,7 @@ namespace Zoco.Api.Data.Seed
                 .FirstAsync(r => r.Name == "Admin");
 
             // CREAR ADMIN SOLO SI NO EXISTE
+            
             if (!await context.Users.AnyAsync(u => u.RoleId == adminRole.Id))
             {
                 var adminConfig = config.GetSection("AdminUser");
@@ -45,16 +46,20 @@ namespace Zoco.Api.Data.Seed
                 var lastName = adminConfig.GetValue<string>("LastName")
                     ?? throw new InvalidOperationException("LastName del admin no configurado");
 
-                var admin = new User
+                if (await context.Users.FirstAsync(u => u.Email == email) == null)
                 {
-                    Email = email,
-                    FirstName = firstName,
-                    LastName = lastName,
-                    RoleId = adminRole.Id,
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(password)
-                };
+                    var admin = new User
+                    {
+                        Email = email,
+                        FirstName = firstName,
+                        LastName = lastName,
+                        RoleId = adminRole.Id,
+                        PasswordHash = BCrypt.Net.BCrypt.HashPassword(password)
+                    };
 
-                context.Users.Add(admin);
+                    context.Users.Add(admin);
+                }
+
                 await context.SaveChangesAsync();
             }
         }
