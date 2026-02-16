@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Zoco.Api.Controllers;
 using Zoco.Api.Models;
 using Zoco.Api.Models.DTOs;
@@ -24,7 +25,7 @@ public class AddressesController : BaseController
         var userId = User.GetUserId();
         var role = User.GetUserRole();
 
-        var addresses = await _service.GetAllAsync(userId,role);
+        var addresses = await _service.GetAllAsync(userId, role);
         return Success(addresses, "Direcciones obtenidas correctamente");
     }
 
@@ -43,6 +44,27 @@ public class AddressesController : BaseController
 
         return Success(address, "Dirección obtenida correctamente");
     }
+
+    // Obtener todos por id usuario
+    [HttpGet("user/{userId}")]
+    [Authorize]
+    // Cambia ActionResult<AddressResponseDTO[]> por IActionResult
+    public async Task<IActionResult> GetUserAddresses(int userId)
+    {
+        var currentUserId = User.GetUserId();
+        var role = User.GetUserRole();
+
+        var result = await _service.GetByUserIdAsync(userId, currentUserId, role);
+
+        if (result == null)
+        {
+            return NotFound("No se encontraron direcciones.");
+        }
+
+        // Ahora esto no dará error
+        return Success(result, "direcciones encontradas", 200);
+    }
+
 
     // Crear
     [Authorize]

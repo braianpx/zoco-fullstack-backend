@@ -56,6 +56,29 @@ namespace Zoco.Api.Services
             };
         }
 
+        public async Task<IEnumerable<AddressResponseDTO>> GetByUserIdAsync(int userId, int currentUserId, string role)
+        {
+            // Seguridad: Si no es Admin y el ID solicitado no es el suyo, retornamos vacío o lanzamos excepción
+            if (role != "Admin" && userId != currentUserId)
+            {
+                return Enumerable.Empty<AddressResponseDTO>();
+            }
+
+            var addresses = await _repository.GetByUserIdAsync(userId); // Método que devuelve IEnumerable<Address>
+
+            return addresses.Select(address => new AddressResponseDTO
+            {
+                Id = address.Id,
+                Street = address.Street,
+                City = address.City,
+                Country = address.Country,
+                PostalCode = address.PostalCode,
+                UserId = address.UserId,
+                UserName = $"{address.User?.FirstName} {address.User?.LastName}"
+            }).ToArray();
+        }
+
+
         public async Task<AddressResponseDTO> CreateAsync(int userId, AddressCreateDTO dto)
         {
             var address = new Address
