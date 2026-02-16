@@ -34,6 +34,26 @@ namespace Zoco.Api.Services
             }).ToList();
         }
 
+        public async Task<IEnumerable<StudyResponseDTO>> GetByUserIdAsync(int targetUserId, int currentUserId, string role)
+        {
+            // Validación de seguridad
+            if (role != "Admin" && targetUserId != currentUserId)
+                return Enumerable.Empty<StudyResponseDTO>();
+
+            var studies = await _repository.GetByUserIdAsync(targetUserId);
+
+            return studies.Select(s => new StudyResponseDTO
+            {
+                Id = s.Id,
+                Institution = s.Institution,
+                Degree = s.Degree,
+                StartDate = s.StartDate,
+                EndDate = s.EndDate,
+                UserId = s.UserId,
+                UserName = $"{s.User?.FirstName} {s.User?.LastName}"
+            }).ToList();
+        }
+
         public async Task<StudyResponseDTO?> GetByIdAsync(int id, int currentUserId, string role)
         {
             var study = await _repository.GetByIdAsync(id);

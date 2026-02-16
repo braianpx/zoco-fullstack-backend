@@ -56,6 +56,22 @@ namespace Zoco.Api.Controllers
         }
 
         [Authorize]
+        [HttpGet("user/{userId}")]
+        public async Task<IActionResult> GetByUserId(int userId)
+        {
+            var currentUserId = User.GetUserId();
+            var role = User.GetUserRole();
+
+            // El service debe devolver una lista (IEnumerable o Array)
+            var studies = await _service.GetByUserIdAsync(userId, currentUserId, role);
+
+            if (studies == null || !studies.Any())
+                return Success(studies, "El usuario no tiene estudios registrados", 200);
+
+            return Success(studies, "Estudios obtenidos correctamente", 200);
+        }
+
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, StudyUpdateDTO dto)
         {
